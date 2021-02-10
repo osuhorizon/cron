@@ -1,0 +1,8 @@
+{ 
+    "host"  : "localhost",
+    "user" : "USERNAME",
+    "password" : "PASSWORD",
+    "database" : "DATABASE",
+    "inactive" : "30",
+    "_comment1" : "Inactive means the days someone has to be inactive to be removed from the leaderboard (Default 30)"
+  }
