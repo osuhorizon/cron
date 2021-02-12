@@ -20,7 +20,7 @@ con.connect(function(err) {
     var sql = `UPDATE users SET privileges = '3' WHERE achievements_version = '9' ; UPDATE users SET achievements_version = '6' WHERE achievements_version = '9'`
     con.query(sql, function (err, result, fields) {
       if (err) throw err;
-      console.log(result.affectedRows + " user unrestricted");
+      console.log("editing everything back to normal");
       process.exit(1)
     });
   });

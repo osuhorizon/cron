@@ -20,10 +20,10 @@ const con = mysql.createConnection({
 
 con.connect(function(err) {
     if (err) throw err;
-    var sql1 = `UPDATE users SET achievements_version = '9' WHERE latest_activity < '${last}' AND privileges >= '3' AND id != '999' ; UPDATE users SET privileges = '2' WHERE achievements_version = '9'`
-    con.query(sql1, function (err, result, fields) {
+    var sql = `UPDATE users SET achievements_version = '9' WHERE latest_activity < '${last}' AND privileges >= '3' AND id != '999' ; UPDATE users SET privileges = '2' WHERE achievements_version = '9'`
+    con.query(sql, function (err, result, fields) {
       if (err) throw err;
-      console.log(result.affectedRows + " user edited");
+      console.log(`Inactive user edited that were offline for over ${config.inactive} days.`);
       process.exit(1)
     });
   });
