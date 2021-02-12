@@ -28,6 +28,8 @@ python3.6 cron.py
 
 echo Privileges reset
 
+cd /PATH/TO/CRON/js
+
 node unrestrict.js
 
 echo everything done! Going to sleep.

@@ -7,6 +7,8 @@ Download code
 
 Edit config files
 
+Edit paths in cron.sh
+
 ./cron.sh
 
 
