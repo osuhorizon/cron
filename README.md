@@ -14,4 +14,4 @@ Edit paths in cron.sh
 
 Important note:
 
-There is currently v2 and AutoPilot added. If you don't want to use it please remove the code of it!
+There is currently Relax, AutoPilot and v2 added. You can deactivate the functions in the config.ini file.

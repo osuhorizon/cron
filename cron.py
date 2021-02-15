@@ -31,6 +31,9 @@ for _line in conf_data:
     elif key == 'SQL_USER': SQL_USER = val # Username for SQL.
     elif key == 'SQL_PASS': SQL_PASS = val # Password for SQL.
     elif key == 'SQL_DB': SQL_DB = val # DB name for SQL.
+    elif key == 'MODS_RELAX': STATUS_RELAX = val
+    elif key == 'MODS_AUTO': STATUS_AUTO = val
+    elif key == 'MODS_V2': STATUS_V2 = val
 
 if any(not i for i in [SQL_HOST, SQL_USER, SQL_PASS, SQL_DB]):
     raise Exception('Not all required configuration values could be found (SQL_HOST, SQL_USER, SQL_PASS, SQL_DB).')
@@ -68,83 +71,83 @@ def calculateRanks(): # Calculate hanayo ranks based off db pp values.
     r.delete(r.keys("ripple:leaderboard_auto:*"))
     r.delete(r.keys("ripple:leaderboard_v2:*"))
 
-
-    for relax in range(2):
-        print(f'Calculating {"Relax" if relax else "Vanilla"}.')
-        for gamemode in ['std', 'taiko', 'ctb', 'mania']:
-            print(f'Mode: {gamemode}')
-            if relax:
-                SQL.execute('SELECT rx_stats.id, rx_stats.pp_{gm}, rx_stats.country, users.latest_activity FROM rx_stats LEFT JOIN users ON users.id = rx_stats.id WHERE rx_stats.pp_{gm} > 0 AND users.privileges > 2 ORDER BY pp_{gm} DESC'.format(gm=gamemode))
-            else:
-                SQL.execute('SELECT users_stats.id, users_stats.pp_{gm}, users_stats.country, users.latest_activity FROM users_stats LEFT JOIN users ON users.id = users_stats.id WHERE users_stats.pp_{gm} > 0 AND users.privileges > 2 ORDER BY pp_{gm} DESC'.format(gm=gamemode))
-
-            currentTime = int(time.time())
-            for row in SQL.fetchall():
-                userID       = int(row[0])
-                pp           = float(row[1])
-                country      = row[2].lower()
-
+    if STATUS_RELAX == TRUE:
+        for relax in range(2):
+            print(f'Calculating {"Relax" if relax else "Vanilla"}.')
+            for gamemode in ['std', 'taiko', 'ctb', 'mania']:
+                print(f'Mode: {gamemode}')
                 if relax:
-                    r.zadd(f'ripple:leaderboard_relax:{gamemode}', userID, pp)
+                    SQL.execute('SELECT rx_stats.id, rx_stats.pp_{gm}, rx_stats.country, users.latest_activity FROM rx_stats LEFT JOIN users ON users.id = rx_stats.id WHERE rx_stats.pp_{gm} > 0 AND users.privileges > 2 ORDER BY pp_{gm} DESC'.format(gm=gamemode))
                 else:
-                    r.zadd(f'ripple:leaderboard:{gamemode}', userID, pp)
+                    SQL.execute('SELECT users_stats.id, users_stats.pp_{gm}, users_stats.country, users.latest_activity FROM users_stats LEFT JOIN users ON users.id = users_stats.id WHERE users_stats.pp_{gm} > 0 AND users.privileges > 2 ORDER BY pp_{gm} DESC'.format(gm=gamemode))
 
-                if country != 'xx':
-                    r.zincrby('hanayo:country_list', country, 1)
+                currentTime = int(time.time())
+                for row in SQL.fetchall():
+                    userID       = int(row[0])
+                    pp           = float(row[1])
+                    country      = row[2].lower()
 
-                    r.zadd(f'ripple:leaderboard_relax:{gamemode}:{country}', userID, pp)
+                    if relax:
+                        r.zadd(f'ripple:leaderboard_relax:{gamemode}', userID, pp)
+                    else:
+                        r.zadd(f'ripple:leaderboard:{gamemode}', userID, pp)
 
+                    if country != 'xx':
+                        r.zincrby('hanayo:country_list', country, 1)
 
-    for auto in range(2): #skyloc you fucking idiot   
-        print(f'Calculating {"Auto" if auto else "Vanilla"}.')
-        for gamemode in ['std', 'taiko', 'ctb', 'mania']:
-            print(f'Mode: {gamemode}')
-            if auto:
-                SQL.execute('SELECT auto_stats.id, auto_stats.pp_{gm}, auto_stats.country, users.latest_activity FROM auto_stats LEFT JOIN users ON users.id = auto_stats.id WHERE auto_stats.pp_{gm} > 0 AND users.privileges > 2 ORDER BY pp_{gm} DESC'.format(gm=gamemode))
-            else:
-                SQL.execute('SELECT users_stats.id, users_stats.pp_{gm}, users_stats.country, users.latest_activity FROM users_stats LEFT JOIN users ON users.id = users_stats.id WHERE users_stats.pp_{gm} > 0 AND users.privileges > 2 ORDER BY pp_{gm} DESC'.format(gm=gamemode))
+                        r.zadd(f'ripple:leaderboard_relax:{gamemode}:{country}', userID, pp)
 
-            currentTime = int(time.time())
-            for row in SQL.fetchall():
-                userID       = int(row[0])
-                pp           = float(row[1])
-                country      = row[2].lower()
-
+    if STATUS_AUTO == TRUE:
+        for auto in range(2): #skyloc you fucking idiot   
+            print(f'Calculating {"Auto" if auto else "Vanilla"}.')
+            for gamemode in ['std', 'taiko', 'ctb', 'mania']:
+                print(f'Mode: {gamemode}')
                 if auto:
-                    r.zadd(f'ripple:leaderboard_auto:{gamemode}', userID, pp)
+                    SQL.execute('SELECT auto_stats.id, auto_stats.pp_{gm}, auto_stats.country, users.latest_activity FROM auto_stats LEFT JOIN users ON users.id = auto_stats.id WHERE auto_stats.pp_{gm} > 0 AND users.privileges > 2 ORDER BY pp_{gm} DESC'.format(gm=gamemode))
                 else:
-                    r.zadd(f'ripple:leaderboard:{gamemode}', userID, pp)
+                    SQL.execute('SELECT users_stats.id, users_stats.pp_{gm}, users_stats.country, users.latest_activity FROM users_stats LEFT JOIN users ON users.id = users_stats.id WHERE users_stats.pp_{gm} > 0 AND users.privileges > 2 ORDER BY pp_{gm} DESC'.format(gm=gamemode))
 
-                if country != 'xx':
-                    r.zincrby('hanayo:country_list', country, 1)
+                currentTime = int(time.time())
+                for row in SQL.fetchall():
+                    userID       = int(row[0])
+                    pp           = float(row[1])
+                    country      = row[2].lower()
 
-                    r.zadd(f'ripple:leaderboard_auto:{gamemode}:{country}', userID, pp)
+                    if auto:
+                        r.zadd(f'ripple:leaderboard_auto:{gamemode}', userID, pp)
+                    else:
+                        r.zadd(f'ripple:leaderboard:{gamemode}', userID, pp)
 
+                    if country != 'xx':
+                        r.zincrby('hanayo:country_list', country, 1)
 
-    for v2 in range(2): #skyloc you fucking idiot   
-        print(f'Calculating {"v2" if auto else "Vanilla"}.')
-        for gamemode in ['std', 'taiko', 'ctb', 'mania']:
-            print(f'Mode: {gamemode}')
-            if v2:
-                SQL.execute('SELECT v2_stats.id, v2_stats.pp_{gm}, v2_stats.country, users.latest_activity FROM v2_stats LEFT JOIN users ON users.id = v2_stats.id WHERE v2_stats.pp_{gm} > 0 AND users.privileges > 2 ORDER BY pp_{gm} DESC'.format(gm=gamemode))
-            else:
-                SQL.execute('SELECT users_stats.id, users_stats.pp_{gm}, users_stats.country, users.latest_activity FROM users_stats LEFT JOIN users ON users.id = users_stats.id WHERE users_stats.pp_{gm} > 0 AND users.privileges > 2 ORDER BY pp_{gm} DESC'.format(gm=gamemode))
+                        r.zadd(f'ripple:leaderboard_auto:{gamemode}:{country}', userID, pp)
 
-            currentTime = int(time.time())
-            for row in SQL.fetchall():
-                userID       = int(row[0])
-                pp           = float(row[1])
-                country      = row[2].lower()
-
+    if STATUS_V2 == TRUE:
+        for v2 in range(2): #skyloc you fucking idiot   
+            print(f'Calculating {"v2" if auto else "Vanilla"}.')
+            for gamemode in ['std', 'taiko', 'ctb', 'mania']:
+                print(f'Mode: {gamemode}')
                 if v2:
-                    r.zadd(f'ripple:leaderboard_v2:{gamemode}', userID, pp)
+                    SQL.execute('SELECT v2_stats.id, v2_stats.pp_{gm}, v2_stats.country, users.latest_activity FROM v2_stats LEFT JOIN users ON users.id = v2_stats.id WHERE v2_stats.pp_{gm} > 0 AND users.privileges > 2 ORDER BY pp_{gm} DESC'.format(gm=gamemode))
                 else:
-                    r.zadd(f'ripple:leaderboard:{gamemode}', userID, pp)
+                    SQL.execute('SELECT users_stats.id, users_stats.pp_{gm}, users_stats.country, users.latest_activity FROM users_stats LEFT JOIN users ON users.id = users_stats.id WHERE users_stats.pp_{gm} > 0 AND users.privileges > 2 ORDER BY pp_{gm} DESC'.format(gm=gamemode))
 
-                if country != 'xx':
-                    r.zincrby('hanayo:country_list', country, 1)
+                currentTime = int(time.time())
+                for row in SQL.fetchall():
+                    userID       = int(row[0])
+                    pp           = float(row[1])
+                    country      = row[2].lower()
 
-                    r.zadd(f'ripple:leaderboard_v2:{gamemode}:{country}', userID, pp)
+                    if v2:
+                        r.zadd(f'ripple:leaderboard_v2:{gamemode}', userID, pp)
+                    else:
+                        r.zadd(f'ripple:leaderboard:{gamemode}', userID, pp)
+
+                    if country != 'xx':
+                        r.zincrby('hanayo:country_list', country, 1)
+
+                        r.zadd(f'ripple:leaderboard_v2:{gamemode}:{country}', userID, pp)
 
     print(f'{GREEN}-> Successfully completed rank calculations.\n{MAGENTA}Time: {time.time() - t_start:.2f} seconds.{ENDC}')
     return True
