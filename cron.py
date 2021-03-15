@@ -71,7 +71,7 @@ def calculateRanks(): # Calculate hanayo ranks based off db pp values.
     r.delete(r.keys("ripple:leaderboard_auto:*"))
     r.delete(r.keys("ripple:leaderboard_v2:*"))
 
-    if STATUS_RELAX == TRUE:
+    if STATUS_RELAX == 'TRUE':
         for relax in range(2):
             print(f'Calculating {"Relax" if relax else "Vanilla"}.')
             for gamemode in ['std', 'taiko', 'ctb', 'mania']:
@@ -97,7 +97,7 @@ def calculateRanks(): # Calculate hanayo ranks based off db pp values.
 
                         r.zadd(f'ripple:leaderboard_relax:{gamemode}:{country}', userID, pp)
 
-    if STATUS_AUTO == TRUE:
+    if STATUS_AUTO == 'TRUE':
         for auto in range(2): #skyloc you fucking idiot   
             print(f'Calculating {"Auto" if auto else "Vanilla"}.')
             for gamemode in ['std', 'taiko', 'ctb', 'mania']:
@@ -123,7 +123,7 @@ def calculateRanks(): # Calculate hanayo ranks based off db pp values.
 
                         r.zadd(f'ripple:leaderboard_auto:{gamemode}:{country}', userID, pp)
 
-    if STATUS_V2 == TRUE:
+    if STATUS_V2 == 'TRUE':
         for v2 in range(2): #skyloc you fucking idiot   
             print(f'Calculating {"v2" if auto else "Vanilla"}.')
             for gamemode in ['std', 'taiko', 'ctb', 'mania']:
