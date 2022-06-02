@@ -1,17 +1,46 @@
 # cron
-The osu!Horizon cron currently being used
+The osu!Horizon cron currently being used for ripple - **Refactored** woo!!
 
-How to use:
+# Setup
+knowledge of linux and nodejs will certainly help, but are by no means required.
+(this is really not hard)
+the only requirement for using this is having nodejs installed
+## -> Download code 
 
-Download code
+```sh
+# clone the repository
+git clone https://github.com/osuhorizon/cron
 
-Edit config files
+# enter the folder
+cd cron
+```
 
-Edit paths in cron.sh
+## -> Edit config file
 
-./cron.sh
+```sh
+# feel free to use a text editor here but we are using nano
+nano config.js
 
+# every module is documented in config
+# what you need to change is the database configuration and 
+# deactivate everything that you don't need (ex. v2 or AutoPilot)
+# once you are done just CTRL + X out of nano
+```
 
-Important note:
+## -> Install modules
 
-There is currently Relax, AutoPilot and v2 added. You can deactivate the functions in the config.ini file.
+```sh
+# you need to install the node_modules with npm
+npm install
+```
+
+## -> Run the code
+
+```sh
+# sweet, all you have to do now is run the code.
+# the cron automatically re-runs every hour. You can change that in the source code.
+node cron
+```
+
+This got tested with node v16.10.0 & npm v8 on Ubuntu 18.04
+If there is anything wrong feel free to hit up Lemres#0001 on Discord.
