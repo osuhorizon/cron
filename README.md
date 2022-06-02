@@ -3,7 +3,7 @@ The osu!Horizon cron currently being used for ripple - **Refactored** woo!!
 
 # Setup
 knowledge of linux and nodejs will certainly help, but are by no means required.
-(this is really not hard)
+(this is really not hard)\n
 the only requirement for using this is having nodejs installed
 ## -> Download code 
 
@@ -42,5 +42,5 @@ npm install
 node cron
 ```
 
-This got tested with node v16.10.0 & npm v8 on Ubuntu 18.04
+This got tested with node v16.10.0 & npm v8 on Ubuntu 18.04\n
 If there is anything wrong feel free to hit up Lemres#0001 on Discord.
